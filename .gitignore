@@ -9,5 +9,5 @@ data/
 *.db
 cookie.jar
 PLAN.md
-IFAK_Share.csv
-IFAK_Share.ods.env
+IFAK_Share.ods
+.env

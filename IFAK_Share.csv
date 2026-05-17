@@ -1,0 +1,24 @@
+category,name,needed_per_kit,source,cost_per_package,qty_per_package
+Stop The Bleed,Tourniquet,1,,31.99,1
+Stop The Bleed,Hemostat Gauze,1,,18.95,1
+Stop The Bleed,Compressed Gauze,1,,17.95,6
+Stop The Bleed,Pressure Dressing,2,,19.95,3
+Stop The Bleed,Compact Chest Seal,1,,16.49,1
+OTC Meds,Ibuprophin,6,,8.23,100
+OTC Meds,Acetaminophen,6,,8.23,100
+OTC Meds,Benadryl,4,,29.55,120
+OTC Meds,Imodium,4,,6.38,50
+OTC Meds,Hydrocortison Cream,4,,13.99,144
+OTC Meds,Electrolyte Powder,1,,32.99,30
+Hygiene/Wound Care,Nitrile Gloves,2,,9.99,100
+Hygiene/Wound Care,Antiseptic Wipes,6,,5.59,400
+Hygiene/Wound Care,Antibiotic Ointment,4,,11.66,144
+Hygiene/Wound Care,Saline Rinse,1,,27.95,100
+Hygiene/Wound Care,Unscented Hand Sanitizer,1,,14.89,125
+Boo Boo,Bandaid,1,,12.99,30
+Boo Boo,Blister Pack,1,,23.99,30
+Misc,Trauma Shears,1,,26.50,20
+Misc,Tweezers,1,,9.98,24
+Misc,Safety Pin,1,,6.99,50
+Misc,Surgical Tape,1,,8.99,12
+Misc,Sharpie Marker,1,,23.58,40
