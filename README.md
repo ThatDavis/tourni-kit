@@ -20,17 +20,63 @@ If you have any questions, thoughts, or feature requests feel free to reach out!
 - **Customizable Theme** — Change site title, colors, and branding from the settings page
 - **Category & Item Management** — Add new categories and items without touching the database
 
-## Quick Start (Docker)
+## Quick Start (Pre-built Image)
+
+The easiest way to run Tourni-Kit is to pull the pre-built image from GitHub Container Registry:
 
 ```bash
-# Clone or download the project, then:
+# Pull the latest image
+docker pull ghcr.io/thatdavis/tourni-kit:latest
+
+# Run it (creates a local data/ directory for the SQLite database)
+docker run -d \
+  --name tourni-kit \
+  -p 8001:8000 \
+  -v $(pwd)/data:/app/data \
+  -e SECRET_KEY=$(openssl rand -hex 32) \
+  -e BASE_URL=http://localhost:8001 \
+  ghcr.io/thatdavis/tourni-kit:latest
+
+# Create the first admin user
+docker exec -it tourni-kit python create_admin.py
+```
+
+The app will be available at `http://localhost:8001`.
+
+### With Docker Compose
+
+Create a `docker-compose.yml`:
+
+```yaml
+services:
+  app:
+    image: ghcr.io/thatdavis/tourni-kit:latest
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./data:/app/data
+    env_file:
+      - .env
+```
+
+Copy `.env.example` to `.env`, edit as needed, then run:
+
+```bash
+docker-compose up -d
+docker-compose exec app python create_admin.py
+```
+
+### Build from Source
+
+If you prefer to build the image yourself:
+
+```bash
+# Clone the repo, then:
 docker-compose up --build
 
 # Create the first admin user
 docker-compose exec app python create_admin.py
 ```
-
-The app will be available at `http://localhost:8001`.
 
 The public page shows an "About" link by default. Admins can access the dashboard directly at `/admin/login`.
 
