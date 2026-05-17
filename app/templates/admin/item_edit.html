@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Edit {{ item.name }}{% endblock %}
+
+{% block content %}
+<h2>Edit {{ item.name }}</h2>
+
+<h3>Item Details</h3>
+<form action="/admin/inventory/{{ item.id }}" method="post">
+  <div class="form-grid">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" value="{{ item.name }}" required>
+    </div>
+    <div class="form-group">
+      <label for="category_id">Category</label>
+      <select id="category_id" name="category_id">
+        {% for cat in categories %}
+          <option value="{{ cat.id }}" {% if cat.id == item.category_id %}selected{% endif %}>{{ cat.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="needed_per_kit">Needed per Kit</label>
+      <input type="number" id="needed_per_kit" name="needed_per_kit" value="{{ item.needed_per_kit }}" min="1">
+    </div>
+    <div class="form-group">
+      <label for="qty_per_package">Qty per Package</label>
+      <input type="number" id="qty_per_package" name="qty_per_package" value="{{ item.qty_per_package }}" min="1">
+    </div>
+    <div class="form-group">
+      <label for="cost_per_package">Cost per Package ($)</label>
+      <input type="number" step="0.01" id="cost_per_package" name="cost_per_package" value="{{ '%.2f' | format(item.cost_per_package) }}">
+    </div>
+    <div class="form-group">
+      <label for="source">Source</label>
+      <input type="text" id="source" name="source" value="{{ item.source }}">
+    </div>
+  </div>
+  <button type="submit">Save Changes</button>
+</form>
+
+<h3>Add Stock</h3>
+<div class="card">
+  <p>Current stock: <strong>{{ item.current_stock }}</strong> individual units</p>
+  <form action="/admin/inventory/{{ item.id }}/add-stock" method="post">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="packages">Packages Received</label>
+        <input type="number" id="packages" name="packages" min="1" required>
+      </div>
+      <div class="form-group">
+        <label for="note">Note (optional)</label>
+        <input type="text" id="note" name="note">
+      </div>
+    </div>
+    <p><small>Each package adds <code>{{ item.qty_per_package }}</code> units. {{ item.qty_per_package }} &times; packages = units added.</small></p>
+    <button type="submit">Add Stock</button>
+  </form>
+</div>
+
+<h3>Recent Transactions</h3>
+{% if item.transactions %}
+  <table>
+    <thead>
+      <tr><th>When</th><th>Delta</th><th>New Stock</th><th>Reason</th><th>Note</th><th>User</th></tr>
+    </thead>
+    <tbody>
+      {% for tx in item.transactions[:10] %}
+        <tr>
+          <td>{{ tx.created_at.strftime("%m/%d %H:%M") }}</td>
+          <td>{{ tx.delta }}</td>
+          <td>{{ tx.new_stock }}</td>
+          <td><span class="status status-{{ tx.reason }}">{{ tx.reason }}</span></td>
+          <td class="wrap">{{ tx.note or "&mdash;" }}</td>
+          <td>{{ tx.user.username if tx.user else "&mdash;" }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <div class="alert alert-info">No transactions yet.</div>
+{% endif %}
+
+<p><a href="/admin/inventory">&larr; Back to inventory</a></p>
+{% endblock %}

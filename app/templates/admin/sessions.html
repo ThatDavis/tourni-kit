@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Sessions{% endblock %}
+
+{% block content %}
+<h2>Build Sessions</h2>
+<a href="/admin/sessions/new" role="button">+ New Session</a>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>When</th>
+      <th>Location</th>
+      <th>Confirmed</th>
+      <th>Waitlist</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in sessions %}
+      {% set c = s.signups | selectattr("status", "equalto", "confirmed") | list | length %}
+      {% set w = s.signups | selectattr("status", "equalto", "waitlist") | list | length %}
+      <tr>
+        <td><strong>{{ s.title }}</strong></td>
+        <td>{{ s.scheduled_at.strftime("%Y-%m-%d %H:%M") }}</td>
+        <td>{{ s.location or "&mdash;" }}</td>
+        <td>{{ c }} / {{ s.capacity }}</td>
+        <td>{{ w }} / {{ s.waitlist_limit }}</td>
+        <td><span class="status status-{{ s.status }}">{{ s.status }}</span></td>
+        <td><a href="/admin/sessions/{{ s.id }}">Manage</a></td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

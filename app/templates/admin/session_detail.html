@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}{{ session.title }}{% endblock %}
+
+{% block content %}
+<h2>{{ session.title }}</h2>
+
+<div class="card">
+  <p>
+    <strong>When:</strong> {{ session.scheduled_at.strftime("%A, %B %d at %I:%M %p") }}<br>
+    <strong>Where:</strong> {{ session.location or "TBD" }}<br>
+    <strong>Status:</strong> <span class="status status-{{ session.status }}">{{ session.status }}</span><br>
+    <strong>Base Donation:</strong> ${{ "%.2f" | format(base_donation) }}<br>
+    <strong>Capacity:</strong> {{ session.capacity }} &mdash; <strong>Waitlist:</strong> {{ session.waitlist_limit }}
+  </p>
+  {% if session.status == "scheduled" %}
+    <form action="/admin/sessions/{{ session.id }}/complete" method="post" style="display:inline;">
+      <button type="submit" class="outline">Mark Complete</button>
+    </form>
+  {% endif %}
+</div>
+
+<h3>Confirmed Attendees ({{ confirmed | length }})</h3>
+{% if confirmed %}
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Email</th><th>STB</th><th>Kit Built</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for s in confirmed %}
+        <tr>
+          <td><strong>{{ s.name }}</strong></td>
+          <td>{{ s.email }}</td>
+          <td>{% if s.wants_stb %}<span class="status status-confirmed">Yes</span>{% else %}<span class="status status-cancelled">No</span>{% endif %}</td>
+          <td>{% if s.id in kit_builds %}<span class="status status-attended">Built</span>{% else %}&mdash;{% endif %}</td>
+          <td>
+            {% if s.id not in kit_builds %}
+              <form action="/admin/sessions/{{ session.id }}/build" method="post" style="display:inline;">
+                <input type="hidden" name="signup_id" value="{{ s.id }}">
+                <button type="submit" class="small">Mark Kit Built</button>
+              </form>
+            {% endif %}
+            <form action="/admin/sessions/{{ session.id }}/cancel-signup" method="post" style="display:inline;">
+              <input type="hidden" name="signup_id" value="{{ s.id }}">
+              <button type="submit" class="small outline danger">Cancel</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <div class="alert alert-info">No confirmed attendees yet.</div>
+{% endif %}
+
+<h3>Waitlist ({{ waitlist | length }})</h3>
+{% if waitlist %}
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Email</th><th>STB</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for s in waitlist %}
+        <tr>
+          <td><strong>{{ s.name }}</strong></td>
+          <td>{{ s.email }}</td>
+          <td>{% if s.wants_stb %}<span class="status status-confirmed">Yes</span>{% else %}<span class="status status-cancelled">No</span>{% endif %}</td>
+          <td>
+            <form action="/admin/sessions/{{ session.id }}/cancel-signup" method="post" style="display:inline;">
+              <input type="hidden" name="signup_id" value="{{ s.id }}">
+              <button type="submit" class="small outline danger">Cancel</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <div class="alert alert-info">No one on the waitlist.</div>
+{% endif %}
+
+<h3>Attended / Kits Built ({{ attended | length }})</h3>
+{% if attended %}
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Email</th><th>STB</th></tr>
+    </thead>
+    <tbody>
+      {% for s in attended %}
+        <tr>
+          <td><strong>{{ s.name }}</strong></td>
+          <td>{{ s.email }}</td>
+          <td>{% if s.wants_stb %}<span class="status status-confirmed">Yes</span>{% else %}<span class="status status-cancelled">No</span>{% endif %}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <div class="alert alert-info">No kits recorded yet.</div>
+{% endif %}
+
+<p><a href="/admin/sessions">&larr; Back to sessions</a></p>
+{% endblock %}

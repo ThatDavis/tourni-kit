@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ settings.site_title }}{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    :root {
+      --theme-primary: {{ settings.theme_primary }};
+      --theme-secondary: {{ settings.theme_secondary }};
+      --theme-accent: {{ settings.theme_accent }};
+      --theme-bg: {{ settings.theme_bg }};
+      --theme-card: {{ settings.theme_card }};
+      --theme-text: {{ settings.theme_text }};
+      --theme-text-secondary: {{ settings.theme_text_secondary }};
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <nav>
+        <h1>
+          <a href="/">
+            {{ settings.site_title }}
+          </a>
+        </h1>
+        <div class="nav-links">
+          <a href="/about">About</a>
+          {% if user %}
+            <a href="/admin/dashboard">Dashboard</a>
+            <a href="/admin/inventory">Inventory</a>
+            <a href="/admin/sessions">Events</a>
+            <a href="/admin/users">Users</a>
+            <a href="/admin/settings">Settings</a>
+            <a href="/admin/audit-log">Audit</a>
+            <form action="/admin/logout" method="post">
+              <button type="submit" class="small outline">Logout</button>
+            </form>
+          {% endif %}
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+      <small>{{ settings.site_title }}</small>
+    </footer>
+  </div>
+</body>
+</html>

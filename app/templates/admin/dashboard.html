@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2>Dashboard</h2>
+
+<div class="grid-3">
+  <div class="card">
+    <div class="label">Max Full Kits</div>
+    <p class="big-number">{{ math.global_max_kits }}</p>
+    <small>with Stop The Bleed</small>
+  </div>
+  <div class="card">
+    <div class="label">Max Full Kits (no STB)</div>
+    <p class="big-number">{{ math.global_max_kits_no_stb }}</p>
+    <small>without Stop The Bleed</small>
+  </div>
+  <div class="card">
+    <div class="label">Cost / Kit (no STB)</div>
+    <p class="big-number">${{ "%.2f" | format(math.cost_no_stb) }}</p>
+    <small>suggested minimum donation</small>
+  </div>
+  <div class="card">
+    <div class="label">Cost / Kit (w/ STB)</div>
+    <p class="big-number">${{ "%.2f" | format(math.cost_with_stb) }}</p>
+    <small>with Stop The Bleed supplies</small>
+  </div>
+  <div class="card">
+    <div class="label">Kits Built</div>
+    <p class="big-number">{{ total_kits_built }}</p>
+    <small>total across all sessions</small>
+  </div>
+  <div class="card">
+    <div class="label">Sessions</div>
+    <p class="big-number">{{ total_sessions }}</p>
+    <small>scheduled to date</small>
+  </div>
+</div>
+
+<h3>Upcoming Sessions</h3>
+{% if upcoming %}
+  <table>
+    <thead>
+      <tr><th>Title</th><th>When</th><th>Location</th><th>Spots</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for s in upcoming %}
+        {% set confirmed = s.signups | selectattr("status", "equalto", "confirmed") | list | length %}
+        <tr>
+          <td><strong>{{ s.title }}</strong></td>
+          <td>{{ s.scheduled_at.strftime("%m/%d %I:%M %p") }}</td>
+          <td>{{ s.location or "&mdash;" }}</td>
+          <td>{{ confirmed }} / {{ s.capacity }}</td>
+          <td><a href="/admin/sessions/{{ s.id }}">Manage</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <div class="alert alert-info">No upcoming sessions. <a href="/admin/sessions/new">Create one</a>.</div>
+{% endif %}
+
+<h3>Inventory by Category</h3>
+{% for cat in math.per_category %}
+  <h4>{{ cat.category.name }} &mdash; max kits: {{ cat.max_kits }}</h4>
+  <table>
+    <thead>
+      <tr><th>Item</th><th>Stock</th><th>Needed/Kit</th><th>Kits Possible</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for item_data in cat.entries %}
+        <tr>
+          <td>{{ item_data.item.name }}</td>
+          <td>{{ item_data.item.current_stock }}</td>
+          <td>{{ item_data.item.needed_per_kit }}</td>
+          <td>{{ item_data.kits_possible }}</td>
+          <td><a href="/admin/inventory/{{ item_data.item.id }}">Edit</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endfor %}
+{% endblock %}

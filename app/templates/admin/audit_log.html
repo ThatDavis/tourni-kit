@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Audit Log{% endblock %}
+
+{% block content %}
+<h2>Inventory Audit Log</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>When</th>
+      <th>Item</th>
+      <th>Delta</th>
+      <th>New Stock</th>
+      <th>Reason</th>
+      <th>Note</th>
+      <th>User</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for tx in transactions %}
+      <tr>
+        <td>{{ tx.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+        <td><strong>{{ tx.item.name if tx.item else "&mdash;" }}</strong></td>
+        <td>{{ tx.delta }}</td>
+        <td>{{ tx.new_stock }}</td>
+        <td><span class="status status-{{ tx.reason }}">{{ tx.reason }}</span></td>
+        <td class="wrap">{{ tx.note or "&mdash;" }}</td>
+        <td>{{ tx.user.username if tx.user else "&mdash;" }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

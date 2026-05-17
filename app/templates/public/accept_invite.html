@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Accept Invite{% endblock %}
+
+{% block content %}
+<div class="login-box">
+  <h2>Accept Your Invite</h2>
+
+  <p>You've been invited as <strong>{{ invite.username }}</strong> ({{ invite.email }}).</p>
+
+  {% if error %}
+    <div class="alert alert-error">{{ error }}</div>
+  {% endif %}
+
+  <form action="/accept-invite/{{ invite.token }}" method="post">
+    <div class="form-group">
+      <label for="password">Set Password</label>
+      <input type="password" id="password" name="password" required>
+    </div>
+    <div class="form-group">
+      <label for="confirm_password">Confirm Password</label>
+      <input type="password" id="confirm_password" name="confirm_password" required>
+    </div>
+    <button type="submit" style="width:100%;">Create Account</button>
+  </form>
+</div>
+{% endblock %}

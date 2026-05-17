@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Inventory{% endblock %}
+
+{% block content %}
+<h2>Inventory</h2>
+
+<div style="display:flex; gap:0.5rem; margin-bottom:1rem; flex-wrap:wrap;">
+  <a href="/admin/items/new" role="button">+ New Item</a>
+  <form action="/admin/categories" method="post" style="display:inline-flex; gap:0.5rem; align-items:center;">
+    <input type="text" name="name" placeholder="New category name" required style="width:auto;">
+    <button type="submit">+ Add Category</button>
+  </form>
+</div>
+
+{% for cat in categories %}
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <h3>{{ cat.name }}</h3>
+    <form action="/admin/categories/{{ cat.id }}/delete" method="post" style="display:inline;" onsubmit="return confirm('Delete category &quot;{{ cat.name }}&quot; and all its items?');">
+      <button type="submit" class="small outline danger">Delete</button>
+    </form>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Stock</th>
+        <th>Needed/Kit</th>
+        <th>Cost/Package</th>
+        <th>Qty/Package</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in cat.item_list %}
+        <tr>
+          <td><strong>{{ item.name }}</strong></td>
+          <td>{{ item.current_stock }}</td>
+          <td>{{ item.needed_per_kit }}</td>
+          <td>${{ "%.2f" | format(item.cost_per_package) }}</td>
+          <td>{{ item.qty_per_package }}</td>
+          <td><a href="/admin/inventory/{{ item.id }}">Edit</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Upcoming Build Sessions</h2>
+
+{% if sessions %}
+  <div class="grid-3">
+    {% for s in sessions %}
+      <article class="card session-card">
+        <header>
+          <h3>{{ s.title }}</h3>
+        </header>
+        <div class="meta">
+          <span>&#128197; {{ s.scheduled_at.strftime("%b %d, %I:%M %p") }}</span>
+          <span>&#128205; {{ s.location or "TBD" }}</span>
+        </div>
+        <p>
+          {% set confirmed = s.signups | selectattr("status", "equalto", "confirmed") | list | length %}
+          {% set spots_left = s.capacity - confirmed %}
+          <strong>Spots:</strong>
+          {% if spots_left <= 2 %}<span class="spots-low">{% else %}<span class="spots-ok">{% endif %}
+            {{ spots_left }} / {{ s.capacity }} remaining
+          </span>
+          <br>
+          {% if base_donation > 0 %}
+            <strong>Donation:</strong> ${{ "%.2f" | format(base_donation) }} min. (STB extra calculated at signup)
+          {% endif %}
+        </p>
+        <footer>
+          <a href="/session/{{ s.id }}" role="button">Sign Up</a>
+        </footer>
+      </article>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="alert alert-info">
+    No upcoming sessions scheduled. Check back soon!
+  </div>
+{% endif %}
+{% endblock %}

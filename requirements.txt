@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+jinja2
+sqlalchemy
+alembic
+python-jose
+passlib
+bcrypt<5.0.0
+python-multipart
+aiofiles
+httpx

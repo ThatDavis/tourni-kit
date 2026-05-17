@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Signup Confirmed{% endblock %}
+
+{% block content %}
+<h2>Thanks, {{ name }}!</h2>
+
+{% if status == "confirmed" %}
+  <div class="alert alert-success">
+    <strong>You are confirmed!</strong> We'll see you at <em>{{ session.title }}</em> on {{ session.scheduled_at.strftime("%A, %B %d at %I:%M %p") }}.
+  </div>
+{% else %}
+  <div class="alert alert-info">
+    <strong>You are on the waitlist</strong> (position #{{ waitlist_position }}).<br>
+    If a spot opens up for <em>{{ session.title }}</em>, you'll be notified by email.
+  </div>
+{% endif %}
+
+<div class="card">
+  <p>
+    <strong>When:</strong> {{ session.scheduled_at.strftime("%A, %B %d at %I:%M %p") }}<br>
+    <strong>Where:</strong> {{ session.location or "TBD" }}<br>
+    <strong>Kit Type:</strong> {% if wants_stb %}With Stop The Bleed supplies{% else %}Without Stop The Bleed supplies{% endif %}<br>
+    {% if base_donation > 0 %}
+      <strong>Suggested Minimum Donation:</strong>
+      {% if wants_stb and stb_cost > 0 %}
+        ${{ "%.2f" | format(base_donation + stb_cost) }}
+      {% else %}
+        ${{ "%.2f" | format(base_donation) }}
+      {% endif %}
+    {% endif %}
+  </p>
+</div>
+
+<p><a href="/">&larr; Back to all sessions</a></p>
+{% endblock %}

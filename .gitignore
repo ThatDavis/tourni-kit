@@ -1,0 +1,13 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+data/
+*.db
+cookie.jar
+PLAN.md
+IFAK_Share.csv
+IFAK_Share.ods.env

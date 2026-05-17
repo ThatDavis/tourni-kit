@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up - {{ session.title }}{% endblock %}
+
+{% block content %}
+<h2>{{ session.title }}</h2>
+
+<div class="card">
+  <div class="meta">
+    <span>&#128197; {{ session.scheduled_at.strftime("%A, %B %d at %I:%M %p") }}</span>
+    <span>&#128205; {{ session.location or "TBD" }}</span>
+  </div>
+
+  <p>
+    <strong>Spots:</strong>
+    {% if spots_left <= 2 %}<span class="spots-low">{% else %}<span class="spots-ok">{% endif %}
+      {{ spots_left }} / {{ session.capacity }} remaining
+    </span>
+  </p>
+</div>
+
+{% if error %}
+  <div class="alert alert-error">{{ error }}</div>
+{% endif %}
+
+{% if spots_left > 0 %}
+  <div class="alert alert-success">A spot is available! Fill out the form below to reserve your kit.</div>
+{% elif waitlist_count < session.waitlist_limit %}
+  <div class="alert alert-info">This session is full, but you can join the waitlist. If a spot opens up, you'll be notified by email.</div>
+{% else %}
+  <div class="alert alert-error">This session is completely full (including waitlist).</div>
+{% endif %}
+
+{% if spots_left > 0 or waitlist_count < session.waitlist_limit %}
+  <form action="/session/{{ session.id }}/signup" method="post" id="signup-form">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+    </div>
+
+    {% if stb_cost > 0 %}
+    <div class="card" style="margin-top:1rem;">
+      <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+        <input type="checkbox" id="wants_stb" name="wants_stb" checked style="width:auto;" onchange="updateDonation()">
+        <span><strong>Include Stop The Bleed supplies</strong></span>
+      </label>
+      <p style="margin-bottom:0;">
+        <strong>Suggested Minimum Donation:</strong>
+        <span id="donation-display" style="font-size:1.2rem; color:var(--chi-blue); font-weight:700;">
+          ${{ "%.2f" | format(base_donation + stb_cost) }}
+        </span>
+        <small id="donation-breakdown" style="display:block; margin-top:0.25rem;">
+          Base: ${{ "%.2f" | format(base_donation) }} + STB: ${{ "%.2f" | format(stb_cost) }}
+        </small>
+      </p>
+    </div>
+    {% else %}
+      {% if base_donation > 0 %}
+      <p><strong>Suggested Minimum Donation:</strong> ${{ "%.2f" | format(base_donation) }}</p>
+      {% endif %}
+    {% endif %}
+
+    <button type="submit" style="margin-top:1rem;">
+      {% if spots_left > 0 %}Reserve My Spot{% else %}Join Waitlist{% endif %}
+    </button>
+  </form>
+
+  {% if stb_cost > 0 %}
+  <script>
+    function updateDonation() {
+      const cb = document.getElementById('wants_stb');
+      const base = {{ base_donation }};
+      const stb = {{ stb_cost }};
+      const display = document.getElementById('donation-display');
+      const breakdown = document.getElementById('donation-breakdown');
+      if (cb.checked) {
+        display.textContent = '$' + (base + stb).toFixed(2);
+        breakdown.textContent = 'Base: $' + base.toFixed(2) + ' + STB: $' + stb.toFixed(2);
+      } else {
+        display.textContent = '$' + base.toFixed(2);
+        breakdown.textContent = 'Base only (no STB)';
+      }
+    }
+  </script>
+  {% endif %}
+{% endif %}
+
+<p><a href="/">&larr; Back to all sessions</a></p>
+{% endblock %}

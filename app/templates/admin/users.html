@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Users{% endblock %}
+
+{% block content %}
+<h2>User Management</h2>
+
+<h3>Invite New User</h3>
+{% if error %}
+  <div class="alert alert-error">{{ error }}</div>
+{% endif %}
+
+<form action="/admin/users/invite" method="post">
+  <div class="form-grid">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required>
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+  </div>
+  <button type="submit">Send Invite</button>
+</form>
+
+<hr>
+
+<h3>Active Users</h3>
+{% if users %}
+  <table>
+    <thead>
+      <tr><th>Username</th><th>Email</th><th>Admin</th><th>Created</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+        <tr>
+          <td><strong>{{ u.username }}</strong></td>
+          <td>{{ u.email }}</td>
+          <td>{% if u.is_admin %}Yes{% else %}No{% endif %}</td>
+          <td>{{ u.created_at.strftime("%Y-%m-%d") }}</td>
+          <td>
+            {% if u.id != user.id %}
+              <form action="/admin/users/{{ u.id }}/delete" method="post" style="display:inline;" onsubmit="return confirm('Delete this user?');">
+                <button type="submit" class="small danger">Delete</button>
+              </form>
+            {% else %}
+              <span class="small">(you)</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <div class="alert alert-info">No users yet.</div>
+{% endif %}
+
+<h3>Pending Invites</h3>
+{% if invites %}
+  <table>
+    <thead>
+      <tr><th>Username</th><th>Email</th><th>Sent</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      {% for inv in invites %}
+        <tr>
+          <td><strong>{{ inv.username }}</strong></td>
+          <td>{{ inv.email }}</td>
+          <td>{{ inv.created_at.strftime("%Y-%m-%d") }}</td>
+          <td>
+            {% if inv.used_at %}
+              <span class="status status-confirmed">Accepted</span>
+            {% else %}
+              <span class="status status-waitlist">Pending</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <div class="alert alert-info">No pending invites.</div>
+{% endif %}
+
+<p><a href="/admin/dashboard">&larr; Back to dashboard</a></p>
+{% endblock %}

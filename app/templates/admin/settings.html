@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<h2>Site Settings</h2>
+
+<form action="/admin/settings" method="post">
+  <h3>Branding</h3>
+  <div class="form-group">
+    <label for="site_title">Site Title</label>
+    <input type="text" id="site_title" name="site_title" value="{{ settings.site_title }}" required>
+  </div>
+
+  <h3>About Page Content</h3>
+  <div class="form-group">
+    <label for="about_content">About Page HTML</label>
+    <textarea id="about_content" name="about_content" rows="8">{{ settings.about_content }}</textarea>
+    <small>You can use HTML tags here.</small>
+  </div>
+
+  <h3>Theme Colors</h3>
+  <div class="form-grid">
+    <div class="form-group">
+      <label for="theme_primary">Primary Color <span class="color-swatch" style="background:{{ settings.theme_primary }};"></span></label>
+      <input type="color" id="theme_primary" name="theme_primary" value="{{ settings.theme_primary }}">
+    </div>
+    <div class="form-group">
+      <label for="theme_secondary">Secondary Color <span class="color-swatch" style="background:{{ settings.theme_secondary }};"></span></label>
+      <input type="color" id="theme_secondary" name="theme_secondary" value="{{ settings.theme_secondary }}">
+    </div>
+    <div class="form-group">
+      <label for="theme_accent">Accent Color <span class="color-swatch" style="background:{{ settings.theme_accent }};"></span></label>
+      <input type="color" id="theme_accent" name="theme_accent" value="{{ settings.theme_accent }}">
+    </div>
+    <div class="form-group">
+      <label for="theme_bg">Page Background <span class="color-swatch" style="background:{{ settings.theme_bg }};"></span></label>
+      <input type="color" id="theme_bg" name="theme_bg" value="{{ settings.theme_bg }}">
+    </div>
+    <div class="form-group">
+      <label for="theme_card">Card Background <span class="color-swatch" style="background:{{ settings.theme_card }};"></span></label>
+      <input type="color" id="theme_card" name="theme_card" value="{{ settings.theme_card }}">
+    </div>
+    <div class="form-group">
+      <label for="theme_text">Text Color <span class="color-swatch" style="background:{{ settings.theme_text }};"></span></label>
+      <input type="color" id="theme_text" name="theme_text" value="{{ settings.theme_text }}">
+    </div>
+    <div class="form-group">
+      <label for="theme_text_secondary">Secondary Text <span class="color-swatch" style="background:{{ settings.theme_text_secondary }};"></span></label>
+      <input type="color" id="theme_text_secondary" name="theme_text_secondary" value="{{ settings.theme_text_secondary }}">
+    </div>
+  </div>
+
+  <button type="submit">Save Settings</button>
+</form>
+
+<p><a href="/admin/dashboard">&larr; Back to dashboard</a></p>
+{% endblock %}

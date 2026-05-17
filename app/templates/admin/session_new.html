@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}New Session{% endblock %}
+
+{% block content %}
+<h2>New Build Session</h2>
+
+<form action="/admin/sessions" method="post">
+  <div class="form-group">
+    <label for="title">Title</label>
+    <input type="text" id="title" name="title" required>
+  </div>
+
+  <div class="form-group">
+    <label for="scheduled_at">Date & Time</label>
+    <input type="datetime-local" id="scheduled_at" name="scheduled_at" required>
+  </div>
+
+  <div class="form-group">
+    <label for="location">Location</label>
+    <input type="text" id="location" name="location">
+  </div>
+
+  <div class="form-grid">
+    <div class="form-group">
+      <label for="capacity">Capacity</label>
+      <input type="number" id="capacity" name="capacity" value="10" min="1" required>
+    </div>
+    <div class="form-group">
+      <label for="waitlist_limit">Waitlist Limit</label>
+      <input type="number" id="waitlist_limit" name="waitlist_limit" value="10" min="0" required>
+    </div>
+    <div class="form-group">
+      <label>Suggested Minimum Donation</label>
+      <p style="margin:0; font-size:0.9rem; color:var(--text-secondary);">
+        Auto-calculated from current inventory costs (minus STB)
+      </p>
+    </div>
+  </div>
+
+  <button type="submit">Create Session</button>
+</form>
+{% endblock %}
